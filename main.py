@@ -17,7 +17,6 @@ urls = {
 }
 
 
-
 class Cotizacion(object):
     def __init__(self, id):
         super(Cotizacion, self).__init__()
@@ -25,24 +24,23 @@ class Cotizacion(object):
         self.url = urls[self.id]["url"]
         self.soup = BeautifulSoup(requests.get(self.url).content, "html.parser")
 
-    def compra(self):
-        return urls[self.id]["compra"]
+    def transformar(self, valor):
+        return "${:.2f}".format(float((valor.text.replace(",", ".")))).replace(".", ",")
 
-    def venta(self):
-        return urls[self.id]["venta"]
+    def cotizacion_compra(self):
+        row = self.soup.select_one(urls[self.id]["compra"])
+        return self.transformar(row)
 
-    def cotizacion(self, selector):
-        row = self.soup.select_one(selector)
-        precio = "${:.2f}".format(float((row.text.replace(",", "."))))
-
-        return precio.replace(".", ",")
+    def cotizacion_venta(self):
+        row = self.soup.select_one(urls[self.id]["venta"])
+        return self.transformar(row)
 
 
 def main():
     # ejemplo
     c = Cotizacion("bna")
     print(c.url)
-    print(c.cotizacion(c.compra()))
+    print(c.cotizacion_compra())
 
 if __name__ == '__main__':
     main()

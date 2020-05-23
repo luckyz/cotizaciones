@@ -23,14 +23,7 @@ class Cotizacion(object):
         super(Cotizacion, self).__init__()
         self.id = id
         self.url = urls[self.id]["url"]
-        self.soup = None
-
-    def obtener(self):
-        return requests.get(self.url).content
-
-    def imprimir(self):
-        self.soup = BeautifulSoup(self.obtener(), "html.parser")
-        return self.soup
+        self.soup = BeautifulSoup(requests.get(self.url).content, "html.parser")
 
     def compra(self):
         return urls[self.id]["compra"]
@@ -49,7 +42,6 @@ def main():
     # ejemplo
     c = Cotizacion("bna")
     print(c.url)
-    c.imprimir()
     print(c.cotizacion(c.compra()))
 
 if __name__ == '__main__':
